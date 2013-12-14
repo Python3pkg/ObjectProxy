@@ -21,6 +21,10 @@ class TestProxy(TestCase):
     def test_all(self):
         self.assertEqual(self.testp.__all__, ['num', 'X'])
 
+    def test_bases(self):
+        base = Proxy('testp:base')
+        self.assertEqual(self.X.__bases__, (base, ))
+
     def test_dict(self):
         self.assertEqual(vars(self.X()), { 'name': 'X' })
 
