@@ -1,5 +1,6 @@
 # coding: UTF-8
 from __future__ import absolute_import, division, print_function, unicode_literals
+# @copyright ©2013, Rodrigo Cacilhας <batalema@cacilhas.info>
 
 from contextlib import wraps
 from importlib import import_module
@@ -103,9 +104,10 @@ class Proxy(ProxyBase):
     __rcmp__ = lambda self, o: cmp(o, getattr(super(Proxy, self), '_target'))
     __rdiv__ = lambda self, o: o.__div__(getattr(super(Proxy, self), '_target'))
     __repr__ = lambda self: '<Proxy to {}>'.format(repr(getattr(super(Proxy, self), '_target')))
-    __reverse__ = lambda self: reverse(getattr(super(Proxy, self), '_target'))
+    __reversed__ = lambda self: reversed(getattr(super(Proxy, self), '_target'))
     __rfloordiv__ = lambda self, o: o // getattr(super(Proxy, self), '_target')
     __rlshift__ = lambda self, o: o << getattr(super(Proxy, self), '_target')
+    __rmod__ = lambda self, o: o % getattr(super(Proxy, self), '_target')
     __rmul__ = lambda self, o: o * getattr(super(Proxy, self), '_target')
     __ror__ = lambda self, o: o | getattr(super(Proxy, self), '_target')
     __rpow__ = lambda self, o: o ** getattr(super(Proxy, self), '_target')
@@ -117,7 +119,7 @@ class Proxy(ProxyBase):
     __set__ = lambda self, instance, value: getattr(super(Proxy, self), '_target').__set__(instance, value)
     __setattr__ = lambda self, attr, value: setattr(getattr(super(Proxy, self), '_target'), attr, value)
     __setitem__ = lambda self, key, value: getattr(super(Proxy, self), '_target').__setitem__(key, value)
-    __setslice__ = lambda self, i, j, sequence: getattr(super(Proxy. self), '_target').__setslice__(i, j, sequence)
+    __setslice__ = lambda self, i, j, sequence: getattr(super(Proxy, self), '_target').__setslice__(i, j, sequence)
     __sizeof__ = lambda self: getattr(super(Proxy, self), '_target').__sizeof__()
     __str__ = lambda self: str(getattr(super(Proxy, self), '_target'))
     __sub__ = lambda self, o: getattr(super(Proxy, self), '_target') - o
