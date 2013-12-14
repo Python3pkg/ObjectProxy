@@ -82,6 +82,7 @@ class Proxy(ProxyBase):
     __hash__ = lambda self: hash(getattr(super(Proxy, self), '_target'))
     __hex__ = lambda self: hex(getattr(super(Proxy, self), '_target'))
     __index__ = lambda self: getattr(super(Proxy, self), '_target').__index__()
+    __instancecheck__ = lambda self, instance: isinstance(instance, getattr(super(Proxy, self), '_target'))
     __int__ = lambda self: int(getattr(super(Proxy, self), '_target'))
     __invert__ = lambda self: ~(getattr(super(Proxy, self), '_target'))
     __iter__ = lambda self: iter(getattr(super(Proxy, self), '_target'))

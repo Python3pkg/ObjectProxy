@@ -143,6 +143,10 @@ class TestProxy(TestCase):
     def test_index(self):
         self.assertEqual(index(self.num), 23)
 
+    def test_instancecheck(self):
+        x = self.X()
+        self.assertTrue(isinstance(x, self.X))
+
     def test_int(self):
         value = int(self.num)
         self.assertEqual(value, 23)
