@@ -23,6 +23,7 @@ class ProxyBase(object):
 
     def __init__(self, targetname):
         ProxyBase.__setattr__(self, '__targetname', targetname)
+        ProxyBase.__setattr__(self, '__is_weakref', False)
         ProxyBase.__setattr__(self, '__set', False)
 
 
@@ -35,10 +36,14 @@ class ProxyBase(object):
 
         module = import_module(name)
         target = getattr(module, objname) if objname else module
+
         try:
             target = weakref(target)
         except TypeError:
-            pass
+            ProxyBase.__setattr__(self, '__is_weakref', False)
+        else:
+            ProxyBase.__setattr__(self, '__is_weakref', True)
+
         ProxyBase.__setattr__(self, '__target', target)
         ProxyBase.__setattr__(self, '__set', True)
 
@@ -48,7 +53,7 @@ class ProxyBase(object):
         if not ProxyBase.__getattribute__(self, '__set'):
             ProxyBase.__import_target(self)
         target = ProxyBase.__getattribute__(self, '__target')
-        if isinstance(target, weakref):
+        if ProxyBase.__getattribute__(self, '__is_weakref'):
             target = target()
         return target
 
