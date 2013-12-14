@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from contextlib import wraps
 from importlib import import_module
+from weakref import ref as weakref
 
 __all__ = ['Proxy']
 
@@ -33,7 +34,12 @@ class ProxyBase(object):
             objname = None
 
         module = import_module(name)
-        ProxyBase.__setattr__(self, '__target', getattr(module, objname) if objname else module)
+        target = getattr(module, objname) if objname else module
+        try:
+            target = weakref(target)
+        except TypeError:
+            pass
+        ProxyBase.__setattr__(self, '__target', target)
         ProxyBase.__setattr__(self, '__set', True)
 
 
@@ -41,7 +47,10 @@ class ProxyBase(object):
     def _target(self):
         if not ProxyBase.__getattribute__(self, '__set'):
             ProxyBase.__import_target(self)
-        return ProxyBase.__getattribute__(self, '__target')
+        target = ProxyBase.__getattribute__(self, '__target')
+        if isinstance(target, weakref):
+            target = target()
+        return target
 
 
 class Proxy(ProxyBase):
