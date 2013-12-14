@@ -258,7 +258,7 @@ class TestProxy(TestCase):
         self.assertEqual(25 - self.num, 2)
 
     def test_rtruediv(self):
-        self.assertEqual(70 / self.num, 3.0434782608695654)
+        self.assertEqual(70 / self.num, 70. / 23.)
 
     def test_rxor(self):
         self.assertEqual(15 ^ self.num, 24)
@@ -301,7 +301,7 @@ class TestProxy(TestCase):
         self.assertTrue(issubclass(self.X, base._target))
 
     def test_truediv(self):
-        self.assertEqual(self.num / 3, 7.666666666666667)
+        self.assertEqual(self.num / 3, 23. / 3.)
 
     def test_unicode(self):
         value = unicode(self.num)
