@@ -1,0 +1,11 @@
+*.bak
+*.kpf
+*.pyc
+*.pyo
+*swo
+*swp
+*~
+.DS_Store
+.env
+Icon?
+tmp
