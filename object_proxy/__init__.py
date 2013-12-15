@@ -59,7 +59,7 @@ class ProxyMeta(type):
         '__enter__', '__exit__', '__get__', '__index__', '__nonzero__',
         '__set__', '__setattr__', '__setitem__', '__setslice__',
         '__sizeof__', '__subclasshook__',
-    ) + tuple(method_map.iterkeys())
+    )
 
 
     def __new__(metaclass, name, bases, dct):
@@ -67,7 +67,10 @@ class ProxyMeta(type):
             dct[prop] = metaclass.build_property(prop)
 
         for meth in metaclass.meths:
-            dct[meth] = metaclass.build_method(meth)
+            dct[meth] = metaclass.build_proxy_method(meth)
+
+        for meth in method_map.iterkeys():
+            dct[meth] = metaclass.build_special_method(meth)
 
         return type(name, bases, dct)
 
@@ -80,19 +83,19 @@ class ProxyMeta(type):
 
 
     @staticmethod
-    def build_method(meth):
-        if meth in method_map:
-            return (
-                lambda self, *args:
-                    method_map[meth](super(Proxy, self)._target, *args)
-            )
+    def build_proxy_method(meth):
+        return (
+            lambda self, *args:
+                getattr(super(Proxy, self)._target, meth)(*args)
+        )
 
-        else:
-            return (
-                lambda self, *args:
-                    getattr(super(Proxy, self)._target, meth)(*args)
-            )
 
+    @staticmethod
+    def build_special_method(meth):
+        return (
+            lambda self, *args:
+                method_map[meth](super(Proxy, self)._target, *args)
+        )
 
 
 class Proxy(ProxyBase):
