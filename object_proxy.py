@@ -58,14 +58,51 @@ class ProxyBase(object):
         return target
 
 
+class ProxyMeta(type):
+
+    props = (
+        '__all__', '__doc__', '__file__', '__name__', '__package__',
+    )
+
+    meths = (
+        '__delete__', '__delitem__', '__delslice__', '__div__',
+        '__enter__', '__exit__', '__get__', '__index__', '__nonzero__',
+        '__set__', '__setattr__', '__setitem__', '__setslice__',
+        '__sizeof__', '__subclasshook__',
+    )
+
+
+    def __new__(metaclass, name, bases, dct):
+        for prop in metaclass.props:
+            dct[prop] = metaclass.build_property(prop)
+
+        for meth in metaclass.meths:
+            dct[meth] = metaclass.build_method(meth)
+
+        return type(name, bases, dct)
+
+
+    @classmethod
+    def build_property(metaclass, prop):
+        return property(
+            lambda self: getattr(super(Proxy, self)._target, prop)
+        )
+
+
+    @classmethod
+    def build_method(metaclass, meth):
+        return (
+            lambda self, *args:
+                getattr(super(Proxy, self)._target, meth)(*args)
+        )
+
+
+
 class Proxy(ProxyBase):
 
-    __all__ = property(lambda self: super(Proxy, self)._target.__all__)
+    __metaclass__ = ProxyMeta
+
     __dict__ = property(lambda self: vars(super(Proxy, self)._target))
-    __doc__ = property(lambda self: super(Proxy, self)._target.__doc__)
-    __file__ = property(lambda self: super(Proxy, self)._target.__file__)
-    __name__ = property(lambda self: super(Proxy, self)._target.__name__)
-    __package__ = property(lambda self: super(Proxy, self)._target.__package__)
 
     __abs__ = lambda self: abs(super(Proxy, self)._target)
     __add__ = lambda self, o: super(Proxy, self)._target + o
@@ -76,26 +113,18 @@ class Proxy(ProxyBase):
     __coerce__ = lambda self, o: coerce(super(Proxy, self)._target, o)
     __contains__ = lambda self, item: item in super(Proxy, self)._target
     __delattr__ = lambda self, attr: delattr(super(Proxy, self)._target, attr)
-    __delete__ = lambda self, instance: super(Proxy, self)._target.__delete__(instance)
-    __delitem__ = lambda self, key: super(Proxy, self)._target.__delitem__(key)
-    __delslice__ = lambda self, i, j: super(Proxy, self)._target.__delslice__(i, j)
     __dir__ = catch(lambda self: dir(super(Proxy, self)._target), [])
-    __div__ = lambda self, o: super(Proxy, self)._target.__div__(o)
     __divmod__ = lambda self, o: divmod(super(Proxy, self)._target, o)
     __float__ = lambda self: float(super(Proxy, self)._target)
     __floordiv__ = lambda self, o: super(Proxy, self)._target // o
-    __enter__ = lambda self: super(Proxy, self)._target.__enter__()
     __eq__ = lambda self, o: super(Proxy, self)._target == o
-    __exit__ = lambda self, exc_type, exc_value, traceback: super(Proxy, self)._target.__exit__(exc_type, exc_value, traceback)
     __ge__ = lambda self, o: super(Proxy, self)._target >= o
-    __get__ = lambda self, instance, owner: super(Proxy, self)._target.__get__(instance, owner)
     __getattr__ = lambda self, attr: getattr(super(Proxy, self)._target, attr)
     __getitem__ = lambda self, key: super(Proxy, self)._target[key]
     __getslice__ = lambda self, i, j: super(Proxy, self)._target[i:j]
     __gt__ = lambda self, o: super(Proxy, self)._target > o
     __hash__ = lambda self: hash(super(Proxy, self)._target)
     __hex__ = lambda self: hex(super(Proxy, self)._target)
-    __index__ = lambda self: super(Proxy, self)._target.__index__()
     __instancecheck__ = lambda self, instance: isinstance(instance, super(Proxy, self)._target)
     __int__ = lambda self: int(super(Proxy, self)._target)
     __invert__ = lambda self: ~(super(Proxy, self)._target)
@@ -109,7 +138,6 @@ class Proxy(ProxyBase):
     __mul__ = lambda self, o: super(Proxy, self)._target * o
     __ne__ = lambda self, o: super(Proxy, self)._target != o
     __neg__ = lambda self: -(super(Proxy, self)._target)
-    __nonzero__ = lambda self: super(Proxy, self)._target.__nonzero__()
     __oct__ = lambda self: oct(super(Proxy, self)._target)
     __or__ = lambda self, o: super(Proxy, self)._target | o
     __pos__ = lambda self: +(super(Proxy, self)._target)
@@ -131,14 +159,8 @@ class Proxy(ProxyBase):
     __rsub__ = lambda self, o: o - super(Proxy, self)._target
     __rtruediv__ = lambda self, o: o / super(Proxy, self)._target
     __rxor__ = lambda self, o: o ^ super(Proxy, self)._target
-    __set__ = lambda self, instance, value: super(Proxy, self)._target.__set__(instance, value)
-    __setattr__ = lambda self, attr, value: setattr(super(Proxy, self)._target, attr, value)
-    __setitem__ = lambda self, key, value: super(Proxy, self)._target.__setitem__(key, value)
-    __setslice__ = lambda self, i, j, sequence: super(Proxy, self)._target.__setslice__(i, j, sequence)
-    __sizeof__ = lambda self: super(Proxy, self)._target.__sizeof__()
     __str__ = lambda self: str(super(Proxy, self)._target)
     __sub__ = lambda self, o: super(Proxy, self)._target - o
-    __subclasshook__ = lambda self, *args, **kwargs: super(Proxy, self)._target.__subclasshook__(*args, **kwargs)
     __truediv__ = lambda self, o: super(Proxy, self)._target / o
     __unicode__ = lambda self: unicode(super(Proxy, self)._target)
     __xor__ = lambda self, o: super(Proxy, self)._target ^ o
