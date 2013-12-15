@@ -15,12 +15,16 @@ entity.
 Use
 ===
 
+
+LazyProxy
+---------
+
 To make a proxy to a module, instanciate the ``Proxy`` class with a
 string representing the import name of the module as parameter::
 
-    from object_proxy import Proxy
+    from object_proxy.lazy import LazyProxy
 
-    path = Proxy('os.path')
+    path = LazyProxy('os.path')
 
 
 Only when the proxy is used for the first time, the target module is
@@ -28,7 +32,7 @@ imported.
 
 To make a proxy to an object or a class, use the colon (``:``) syntax::
 
-    environ = Proxy('os:environ')
+    environ = LazyProxy('os:environ')
 
 
 When the proxy is used, it’s equivalent to::
