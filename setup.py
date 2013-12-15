@@ -13,6 +13,8 @@ setup(
     py_modules       = ['object_proxy', 'object_proxy._lambda_relations'],
     author           = 'Rodrigo Cacilhας',
     author_email     = 'batalema@cacilhas.info',
+    url              = 'https://github.com/Montegasppa/ObjectProxy',
+    download_url     = 'https://github.com/Montegasppa/ObjectProxy/archive/devel.zip',
     description      = 'proxy to objects with lazy import',
     install_requires = [],
     classifiers      = [
