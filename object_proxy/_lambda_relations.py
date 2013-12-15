@@ -4,15 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from contextlib import wraps
 
-__all__ = ['get', 'has']
-
-
-def has(meth):
-    return meth in meths
-
-
-def get(meth):
-    return meths[meth]
+__all__ = ['method_map']
 
 
 def catch(wrapped, default=None):
@@ -25,7 +17,7 @@ def catch(wrapped, default=None):
     return wrapper
 
 
-meths = {
+method_map = {
     '__abs__': abs,
     '__add__': lambda target, o: target + o,
     '__and__': lambda target, o: target & o,

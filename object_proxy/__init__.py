@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from importlib import import_module
 from weakref import ref as weakref
-from . import _lambda_relations
+from ._lambda_relations import method_map
 
 __all__ = ['Proxy']
 
@@ -59,21 +59,7 @@ class ProxyMeta(type):
         '__enter__', '__exit__', '__get__', '__index__', '__nonzero__',
         '__set__', '__setattr__', '__setitem__', '__setslice__',
         '__sizeof__', '__subclasshook__',
-
-        '__abs__', '__add__', '__and__', '__bool__', '__call__',
-        '__cmp__', '__coerce__', '__contains__', '__delattr__',
-        '__dir__', '__divmod__', '__float__', '__floordiv__', '__eq__',
-        '__ge__', '__getattr__', '__getitem__', '__getslice__',
-        '__gt__', '__hash__', '__hex__', '__instancecheck__', '__int__',
-        '__invert__', '__iter__', '__le__', '__len__', '__long__',
-        '__lshift__', '__lt__', '__mod__', '__mul__', '__ne__',
-        '__neg__', '__oct__', '__or__', '__pos__', '__pow__',
-        '__radd__', '__rand__', '__rcmp__', '__rdiv__', '__repr__',
-        '__reversed__', '__rfloordiv__', '__rlshift__', '__rmod__',
-        '__rmul__', '__ror__', '__rpow__', '__rrshift__', '__rshift__',
-        '__rsub__', '__rtruediv__', '__rxor__', '__str__', '__sub__',
-        '__truediv__', '__unicode__', '__xor__',
-    )
+    ) + tuple(method_map.iterkeys())
 
 
     def __new__(metaclass, name, bases, dct):
@@ -86,19 +72,19 @@ class ProxyMeta(type):
         return type(name, bases, dct)
 
 
-    @classmethod
-    def build_property(metaclass, prop):
+    @staticmethod
+    def build_property(prop):
         return property(
             lambda self: getattr(super(Proxy, self)._target, prop)
         )
 
 
-    @classmethod
-    def build_method(metaclass, meth):
-        if _lambda_relations.has(meth):
+    @staticmethod
+    def build_method(meth):
+        if meth in method_map:
             return (
                 lambda self, *args:
-                    _lambda_relations.get(meth)(super(Proxy, self)._target, *args)
+                    method_map[meth](super(Proxy, self)._target, *args)
             )
 
         else:
