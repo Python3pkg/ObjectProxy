@@ -3,6 +3,15 @@ from distutils.core import setup
 from os import path
 
 
+readme = path.join(path.dirname(__file__), 'README')
+if path.exists(readme):
+    with open(readme) as fd:
+        long_description = fd.read()
+
+else:
+    long_description = None
+
+
 setup(
     name             = 'ObjectProxy',
     version          = '0.3-1.0rc1',
@@ -14,6 +23,7 @@ setup(
     author           = 'Rodrigo Cacilhας',
     author_email     = 'batalema@cacilhas.info',
     description      = 'proxy to objects with lazy import',
+    long_description = long_description,
     install_requires = [],
     classifiers      = [
         'License :: OSI Approved :: BSD License',
