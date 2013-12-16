@@ -108,17 +108,17 @@ class TestContext(TestCase):
         proxy1 = LazyProxy('tests.fixtures', context=default)
         proxy2 = LazyProxy('tests.fixtures:num', context=context)
 
-        self.assertEqual(Context.find_proxy(proxy1), [('default', 'tests.fixtures')])
-        self.assertEqual(Context.find_proxy(proxy2), [('other', 'tests.fixtures:num')])
+        self.assertEqual(Context.find_proxy(proxy1), {('default', 'tests.fixtures')})
+        self.assertEqual(Context.find_proxy(proxy2), {('other', 'tests.fixtures:num')})
 
     def test_find_proxy_2(self):
         context = self.other
         default = self.default
         proxy = LazyProxy('tests.fixtures', context=default)
         context.register(proxy, 'tests.fixtures:num')
-        self.assertEqual(dict(Context.find_proxy(proxy)), {
-            'default': 'tests.fixtures',
-            'other': 'tests.fixtures:num',
+        self.assertEqual(Context.find_proxy(proxy), {
+            ('default', 'tests.fixtures'),
+            ('other', 'tests.fixtures:num'),
         })
 
     def test_default_get_child(self):

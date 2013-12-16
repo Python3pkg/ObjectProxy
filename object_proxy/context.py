@@ -28,11 +28,11 @@ def Context():
 
             if isinstance(context, Context):
                 cls.__current = context
-                return
 
-            try:
+            elif context in _contexts:
                 cls.__current = _contexts[context]
-            except KeyError:
+
+            else:
                 raise ValueError('context {} not found'.format(context))
 
 
@@ -42,11 +42,11 @@ def Context():
 
         def find_proxy(cls, proxy):
             proxy_id = id(proxy)
-            return [
+            return set(
                 (name, context[proxy_id])
                 for name, context in _contexts.iteritems()
                 if proxy_id in context
-            ]
+            )
 
 
         def delete_context(cls, context):

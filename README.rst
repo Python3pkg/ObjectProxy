@@ -84,7 +84,7 @@ You can know whether a proxy belongs to a context using ``id()`` and
 To discover which contexts a proxy belongs::
 
     >>> Context.find_proxy(patch)
-    [('gevent', 'gevent.monkey:patch_all'), ('eventlet', 'eventlet:monkey_patch')]
+    set(('gevent', 'gevent.monkey:patch_all'), ('eventlet', 'eventlet:monkey_patch'))
 
 
 Contexts can get children::
