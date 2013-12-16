@@ -1,5 +1,6 @@
 .. _BSD New: http://opensource.org/licenses/BSD-3-Clause
 .. _GitHUB: https://github.com/Montegasppa/ObjectProxy
+.. _license file: https://github.com/Montegasppa/ObjectProxy/blob/devel/LICENSE
 .. _mail me: mailto:batalema@cacilhas.info
 .. _project issues: https://github.com/Montegasppa/ObjectProxy/issues
 
@@ -121,7 +122,7 @@ There’s a lot work to do. You can `mail me`_ with suggestions or see the
 License
 =======
 
-ObjectProxy is licensed under `BSD New`_. See ``LICENSE`` file.
+ObjectProxy is licensed under `BSD New`_. See the `license file`_.
 
 
 Author
