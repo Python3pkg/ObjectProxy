@@ -79,9 +79,10 @@ class TestContext(TestCase):
 
     def test_list_contexts(self):
         contexts = Context.contexts
-        self.assertEqual(len(contexts), 2)
-        self.assertTrue(('default', Context('default')) in contexts)
-        self.assertTrue(('other', Context('other')) in contexts)
+        self.assertEqual(contexts, {
+            ('default', Context('default')),
+            ('other', Context('other')),
+        })
 
     def test_contain_proxy_1(self):
         context = self.other

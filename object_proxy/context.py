@@ -15,7 +15,7 @@ def Context():
 
         @property
         def contexts(cls):
-            return tuple(_contexts.iteritems())
+            return set(_contexts.iteritems())
 
 
         @property
