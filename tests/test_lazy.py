@@ -5,23 +5,26 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from os import path
 from operator import index
 from unittest import skip, TestCase
-from object_proxy import Proxy
+from object_proxy.lazy import LazyProxy
+
+
+__all__ = ['TestProxy']
 
 
 class TestProxy(TestCase):
 
     def setUp(self):
-        self.fixtures = Proxy('tests.fixtures')
-        self.num = Proxy('tests.fixtures:num')
-        self.mylist = Proxy('tests.fixtures:mylist')
-        self.X = Proxy('tests.fixtures:X')
+        self.fixtures = LazyProxy('tests.fixtures')
+        self.num = LazyProxy('tests.fixtures:num')
+        self.mylist = LazyProxy('tests.fixtures:mylist')
+        self.X = LazyProxy('tests.fixtures:X')
 
 
     def test_all(self):
         self.assertEqual(self.fixtures.__all__, ['num', 'X'])
 
     def test_bases(self):
-        base = Proxy('tests.fixtures:base')
+        base = LazyProxy('tests.fixtures:base')
         self.assertEqual(self.X.__bases__, (base, ))
 
     def test_dict(self):
@@ -33,6 +36,15 @@ class TestProxy(TestCase):
     def test_file(self):
         self.assertTrue(
             path.basename(self.fixtures.__file__) in ('fixtures.py', 'fixtures.pyc'))
+
+    def test_id(self):
+        proxy = LazyProxy('tests.fixtures:unexistent')
+        id(proxy)
+        self.assertNotEqual(id(self.X), id(self.X._target))
+
+    def test_lazy_import(self):
+        proxy = LazyProxy('tests.fixtures:unexistent')
+        self.assertRaises(AttributeError, lambda: proxy.__name__)
 
     def test_name(self):
         self.assertEqual(self.X.__name__, 'X')
@@ -53,7 +65,7 @@ class TestProxy(TestCase):
         self.assertTrue(bool(self.num))
 
     def test_call(self):
-        incr = Proxy('tests.fixtures:incr')
+        incr = LazyProxy('tests.fixtures:incr')
         self.assertEqual(incr(2), 3)
 
     def test_cmp(self):
@@ -77,13 +89,13 @@ class TestProxy(TestCase):
         pass
 
     def test_delitem(self):
-        mydict = Proxy('tests.fixtures:mydict')
+        mydict = LazyProxy('tests.fixtures:mydict')
         assert 'a' in mydict
         del mydict['a']
         self.assertFalse('a' in mydict)
 
     def test_delslice(self):
-        mutablestring = Proxy('tests.fixtures:mutablestring')
+        mutablestring = LazyProxy('tests.fixtures:mutablestring')
         assert mutablestring == ['a', 'b', 'c', 'd', 'e', 'f']
         del mutablestring[1:3]
         self.assertEqual(mutablestring, ['a', 'd', 'e', 'f'])
@@ -228,10 +240,9 @@ class TestProxy(TestCase):
         self.assertEqual(self.num.__rdiv__(70), 3)
 
     def test_repr(self):
-        self.assertEqual(repr(self.num), '<Proxy to 23>')
-        self.assertEqual(repr(self.mylist), '<Proxy to [0, 1, 2, 3]>')
-        self.assertEqual(repr(self.fixtures),
-                         "<Proxy to <module 'tests.fixtures' from '{}'>>".format(self.fixtures.__file__))
+        self.assertEqual(repr(self.num), "<LazyProxy to 'tests.fixtures:num'>")
+        self.assertEqual(repr(self.mylist), "<LazyProxy to 'tests.fixtures:mylist'>")
+        self.assertEqual(repr(self.fixtures), "<LazyProxy to 'tests.fixtures'>")
 
     def test_reversed(self):
         self.assertEqual([x for x in reversed(self.mylist)], [3, 2, 1, 0])
@@ -275,18 +286,18 @@ class TestProxy(TestCase):
         pass
 
     def test_setattr(self):
-        x = Proxy('tests.fixtures:changeable_x')
+        x = LazyProxy('tests.fixtures:changeable_x')
         setattr(x, 'set_attr', 'set')
         self.assertEqual(x.set_attr, 'set')
 
     def test_setitem(self):
-        l = Proxy('tests.fixtures:changeable_list_1')
+        l = LazyProxy('tests.fixtures:changeable_list_1')
         assert l == [0, 1]
         l[1] = 2
         self.assertEqual(l, [0, 2])
 
     def test_setslice(self):
-        l = Proxy('tests.fixtures:changeable_list_2')
+        l = LazyProxy('tests.fixtures:changeable_list_2')
         assert l == [0, 1, 2, 3]
         l[1:3] = [4]
         self.assertEqual(l, [0, 4, 3])
@@ -304,7 +315,7 @@ class TestProxy(TestCase):
         self.assertEqual(self.num - 2, 21)
 
     def test_subclasshook(self):
-        base = Proxy('tests.fixtures:base')
+        base = LazyProxy('tests.fixtures:base')
         self.assertTrue(issubclass(self.X, base._target))
 
     def test_truediv(self):

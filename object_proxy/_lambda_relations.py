@@ -60,7 +60,6 @@ method_map = {
     '__rand__': lambda target, o: o & target,
     '__rcmp__': lambda target, o: cmp(o, target),
     '__rdiv__': lambda target, o: o.__div__(target),
-    '__repr__': lambda target: '<Proxy to {}>'.format(repr(target)),
     '__reversed__': reversed,
     '__rfloordiv__': lambda target, o: o // target,
     '__rlshift__': lambda target, o: o << target,

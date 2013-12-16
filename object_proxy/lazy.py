@@ -5,20 +5,24 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from importlib import import_module
 from weakref import ref as weakref
 from ._lambda_relations import method_map
+from .context import Context
 
 __all__ = ['LazyProxy']
 
 
 class ProxyBase(object):
 
-    def __init__(self, targetname):
-        ProxyBase.__setattr__(self, '__targetname', targetname)
+    def __init__(self, targetname, context=None):
+        ProxyBase.__setattr__(self, '__context', None)
         ProxyBase.__setattr__(self, '__is_weakref', False)
-        ProxyBase.__setattr__(self, '__set', False)
+        context = Context(context or Context.current)
+        context.register(self, targetname)
 
 
     def __import_target(self):
-        name = ProxyBase.__getattribute__(self, '__targetname')
+        context = Context.current
+        ProxyBase.__setattr__(self, '__context', context)
+        name = context[id(self)]
         if ':' in name:
             name, objname = name.split(':', 1)
         else:
@@ -35,12 +39,12 @@ class ProxyBase(object):
             ProxyBase.__setattr__(self, '__is_weakref', True)
 
         ProxyBase.__setattr__(self, '__target', target)
-        ProxyBase.__setattr__(self, '__set', True)
 
 
     @property
     def _target(self):
-        if not ProxyBase.__getattribute__(self, '__set'):
+        context = ProxyBase.__getattribute__(self, '__context')
+        if context != Context.current:
             ProxyBase.__import_target(self)
         target = ProxyBase.__getattribute__(self, '__target')
         if ProxyBase.__getattribute__(self, '__is_weakref'):
@@ -102,3 +106,12 @@ class LazyProxy(ProxyBase):
 
     __metaclass__ = ProxyMeta
     __dict__ = property(lambda self: vars(super(LazyProxy, self)._target))
+
+    def __repr__(self):
+        context = Context.current
+        try:
+            target = context[id(self)]
+            return "<LazyProxy to '{}'>".format(target)
+
+        except NameError:
+            return '<LazyProxy from another context>'

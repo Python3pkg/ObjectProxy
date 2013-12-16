@@ -16,8 +16,8 @@ Use
 ===
 
 
-LazyProxy
----------
+Lazy proxy
+----------
 
 To make a proxy to a module, instanciate the ``Proxy`` class with a
 string representing the import name of the module as parameter::
@@ -38,6 +38,37 @@ To make a proxy to an object or a class, use the colon (``:``) syntax::
 When the proxy is used, it’s equivalent to::
 
     from os import environ
+
+
+Context-dependent proxy
+-----------------------
+
+The proxy can be context-dependent.
+
+You must instanciate a context::
+
+    from object_proxy.lazy import LazyProxy
+    from object_proxy.context import Context
+
+    gevent_context = Context('gevent')
+    eventlet_context = Context('eventlet')
+
+    patch = LazyProxy('gevent.monkey:patch_all', context=gevent_context)
+    eventlet_context.register(patch, 'eventlet:monkey_patch')
+
+    # Run monkey patch from gevent
+    Context.activate('gevent')
+    # Or:
+    Context.activate(gevent_context)
+    # Or:
+    gevent_context.activate()
+    # And then:
+    patch()
+
+    # Run monkey patch from eventlet
+    Context.activate('eventlet')
+    # Identical to the previous
+    patch()
 
 
 Download and install

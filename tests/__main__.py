@@ -9,6 +9,7 @@ sys.path.append(path.realpath(path.join(path.dirname(__file__), path.pardir)))
 
 from unittest import main
 from tests.test_lazy import *
+from tests.test_context import *
 
 
 if __name__ == '__main__':
