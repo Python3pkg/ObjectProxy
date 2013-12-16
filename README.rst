@@ -40,6 +40,12 @@ When the proxy is used, it’s equivalent to::
     from os import environ
 
 
+Note
+~~~~
+
+The functions ``repr()`` and ``id()`` are **not** proxied to target.
+
+
 Context-dependent proxy
 -----------------------
 
@@ -69,6 +75,20 @@ You must instanciate a context::
     Context.activate('eventlet')
     # Identical to the previous
     patch()
+
+
+You can know whether a proxy belongs to a context using ``id()`` and
+``in``::
+
+    id(patch) in gevent_context
+    # Evaluates to True
+
+
+To discover which contexts a proxy belongs::
+
+    Context.find_proxy(patch)
+    # Evaluates to [('gevent', 'gevent.monkey:patch_all'),
+    #               ('eventlet', 'eventlet:monkey_patch')]
 
 
 Download and install
