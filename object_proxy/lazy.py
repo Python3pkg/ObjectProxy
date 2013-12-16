@@ -13,6 +13,9 @@ __all__ = ['LazyProxy']
 @apply
 def LazyProxy():
 
+    method_dict = dict(method_map)
+
+
     class ProxyBase(object):
 
         def __init__(self, targetname, context=None):
@@ -76,7 +79,7 @@ def LazyProxy():
             for meth in metaclass.meths:
                 dct[meth] = metaclass.build_proxy_method(meth)
 
-            for meth in method_map.iterkeys():
+            for meth in method_dict.iterkeys():
                 dct[meth] = metaclass.build_special_method(meth)
 
             return type(name, bases, dct)
@@ -101,7 +104,7 @@ def LazyProxy():
         def build_special_method(meth):
             return (
                 lambda self, *args:
-                    method_map[meth](super(LazyProxy, self)._target, *args)
+                    method_dict[meth](super(LazyProxy, self)._target, *args)
             )
 
 
