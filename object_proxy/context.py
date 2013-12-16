@@ -15,7 +15,7 @@ def Context():
 
         @property
         def contexts(cls):
-            return tuple(_contexts.iteritems())
+            return set(_contexts.iteritems())
 
 
         @property
@@ -49,6 +49,10 @@ def Context():
             ]
 
 
+        def delete_context(cls, context):
+            _contexts.pop(context.name)
+
+
         def __call__(cls, name_or_context):
             if isinstance(name_or_context, Context):
                 return name_or_context
@@ -77,10 +81,30 @@ def Context():
             self.activate = activate
 
 
+        def __get_proxy(self, key):
+            proxies = self.__proxies
+            if key in proxies:
+                return True, proxies[key]
+            else:
+                return False, None
+
+
         def __getitem__(self, key):
+            found, proxy = self.__get_proxy(key)
+            if found:
+                return proxy
+
+            name = self.name
+            index = name.rfind('.')
+
             try:
-                return self.__proxies[key]
-            except KeyError:
+                if index == -1:
+                    raise NameError
+
+                name = name[:index]
+                return Context(name)[key]
+
+            except NameError:
                 raise NameError('context {} has no proxy {}'.format(self.name, key))
 
 
@@ -90,6 +114,12 @@ def Context():
 
         def __contains__(self, proxy_id):
             return proxy_id in self.__proxies
+
+
+        def get_child(self, name):
+            if self.name != 'default':
+                name = '.'.join((self.name, name))
+            return type(self)(name)
 
 
         def reset(self):

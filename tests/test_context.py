@@ -79,9 +79,10 @@ class TestContext(TestCase):
 
     def test_list_contexts(self):
         contexts = Context.contexts
-        self.assertEqual(len(contexts), 2)
-        self.assertTrue(('default', Context('default')) in contexts)
-        self.assertTrue(('other', Context('other')) in contexts)
+        self.assertEqual(contexts, {
+            ('default', Context('default')),
+            ('other', Context('other')),
+        })
 
     def test_contain_proxy_1(self):
         context = self.other
@@ -119,3 +120,27 @@ class TestContext(TestCase):
             'default': 'tests.fixtures',
             'other': 'tests.fixtures:num',
         })
+
+    def test_default_get_child(self):
+        context = self.default.get_child('child')
+        try:
+            self.assertEqual(context.name, 'child')
+        finally:
+            Context.delete_context(context)
+
+    def test_get_child(self):
+        context = self.other.get_child('child')
+        try:
+            self.assertEqual(context.name, 'other.child')
+        finally:
+            Context.delete_context(context)
+
+    def test_subcontext_inherits_super_environment(self):
+        try:
+            context = self.other.get_child('child')
+            proxy = LazyProxy('tests.fixtures', context=self.other)
+            context.activate()
+            self.assertEqual(proxy.__name__, 'tests.fixtures')
+
+        finally:
+            Context.delete_context(context)
