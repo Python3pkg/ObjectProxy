@@ -36,6 +36,15 @@ def Context():
                 raise ValueError('context {} not found'.format(context))
 
 
+        def find_proxy(cls, proxy):
+            proxy_id = id(proxy)
+            return [
+                (name, context[proxy_id])
+                for name, context in _contexts.iteritems()
+                if proxy_id in context
+            ]
+
+
         def __call__(cls, name_or_context):
             if isinstance(name_or_context, Context):
                 return name_or_context
