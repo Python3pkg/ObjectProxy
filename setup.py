@@ -14,7 +14,7 @@ else:
 
 setup(
     name             = 'ObjectProxy',
-    version          = '0.3-1.0rc1',
+    version          = '0.4-1.0rc2',
     license          = 'BSD',
     platforms        = 'any',
     url              = 'https://github.com/Montegasppa/ObjectProxy',

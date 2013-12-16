@@ -64,11 +64,8 @@ You must instanciate a context::
 
     # Run monkey patch from gevent
     Context.activate('gevent')
-    # Or:
-    Context.activate(gevent_context)
-    # Or:
-    gevent_context.activate()
-    # And then:
+    # Or: Context.activate(gevent_context)
+    # Or: gevent_context.activate()
     patch()
 
     # Run monkey patch from eventlet
@@ -80,15 +77,30 @@ You must instanciate a context::
 You can know whether a proxy belongs to a context using ``id()`` and
 ``in``::
 
-    id(patch) in gevent_context
-    # Evaluates to True
+    >>> id(patch) in gevent_context
+    True
 
 
 To discover which contexts a proxy belongs::
 
-    Context.find_proxy(patch)
-    # Evaluates to [('gevent', 'gevent.monkey:patch_all'),
-    #               ('eventlet', 'eventlet:monkey_patch')]
+    >>> Context.find_proxy(patch)
+    [('gevent', 'gevent.monkey:patch_all'), ('eventlet', 'eventlet:monkey_patch')]
+
+
+Contexts can get children::
+
+    >>> context = gevent_context.get_child('with_path')
+    >>> context.name
+    'gevent.with_path'
+    >>> path = LazyProxy('os.path', context=context)
+    >>> context.activate()
+    >>> path
+    <module 'posixpath' from '/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/posixpath.pyc'>
+    >>> patch
+    <function patch_all at 0x109b1a848>
+
+
+The function ``patch()`` is inherited from super context.
 
 
 Download and install
