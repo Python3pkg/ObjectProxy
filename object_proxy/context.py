@@ -75,10 +75,30 @@ def Context():
             self.activate = activate
 
 
+        def __get_proxy(self, key):
+            proxies = self.__proxies
+            if key in proxies:
+                return True, proxies[key]
+            else:
+                return False, None
+
+
         def __getitem__(self, key):
+            found, proxy = self.__get_proxy(key)
+            if found:
+                return proxy
+
+            name = self.name
+            index = name.rfind('.')
+
             try:
-                return self.__proxies[key]
-            except KeyError:
+                if index == -1:
+                    raise NameError
+
+                name = name[:index]
+                return Context(name)[key]
+
+            except NameError:
                 raise NameError('context {} has no proxy {}'.format(self.name, key))
 
 

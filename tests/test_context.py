@@ -134,3 +134,13 @@ class TestContext(TestCase):
             self.assertEqual(context.name, 'other.child')
         finally:
             Context.delete_context(context)
+
+    def test_subcontext_inherits_super_environment(self):
+        try:
+            context = self.other.get_child('child')
+            proxy = LazyProxy('tests.fixtures', context=self.other)
+            context.activate()
+            self.assertEqual(proxy.__name__, 'tests.fixtures')
+
+        finally:
+            Context.delete_context(context)
