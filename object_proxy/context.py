@@ -36,6 +36,10 @@ def Context():
                 raise ValueError('context {} not found'.format(context))
 
 
+        def activate(cls, context):
+            cls.current = context
+
+
         def find_proxy(cls, proxy):
             proxy_id = id(proxy)
             return [
@@ -66,6 +70,8 @@ def Context():
             self.name = name
             self.reset()
 
+            # Override activate() class method
+            # with simulated instance method
             def activate():
                 type(self).activate(self)
             self.activate = activate
@@ -92,11 +98,6 @@ def Context():
 
         def register(self, proxy, targetname):
             self[id(proxy)] = targetname
-
-
-        @classmethod
-        def activate(cls, context):
-            cls.current = context
 
 
     Context.current = Context('default')
