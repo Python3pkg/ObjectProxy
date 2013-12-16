@@ -17,7 +17,7 @@ setup(
     version          = '0.4-1.0rc2',
     license          = 'BSD',
     platforms        = 'any',
-    url              = 'https://github.com/Montegasppa/ObjectProxy',
+    url              = 'https://pypi.python.org/pypi/ObjectProxy',
     download_url     = 'https://github.com/Montegasppa/ObjectProxy/archive/devel.zip',
     py_modules       = ['object_proxy', 'object_proxy._lambda_relations'],
     author           = 'Rodrigo Cacilhας',
