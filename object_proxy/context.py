@@ -14,6 +14,11 @@ def Context():
     class ContextMeta(type):
 
         @property
+        def contexts(cls):
+            return tuple(_contexts.iteritems())
+
+
+        @property
         def current(cls):
             return cls.__current
 
@@ -66,6 +71,10 @@ def Context():
 
         def __setitem__(self, key, targetname):
             self.__proxies[key] = targetname
+
+
+        def __contains__(self, proxy_id):
+            return proxy_id in self.__proxies
 
 
         def reset(self):

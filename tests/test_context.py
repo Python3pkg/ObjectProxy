@@ -74,6 +74,29 @@ class TestContext(TestCase):
         default.activate()
         self.assertEqual(Context.current, default)
 
-
     def test_inexistent_context(self):
         self.assertRaises(ValueError, Context.activate, 'unknown')
+
+    def test_list_contexts(self):
+        contexts = Context.contexts
+        self.assertEqual(len(contexts), 2)
+        self.assertTrue(('default', Context('default')) in contexts)
+        self.assertTrue(('other', Context('other')) in contexts)
+
+    def test_contain_proxy_1(self):
+        context = self.other
+        default = self.default
+        proxy1 = LazyProxy('tests.fixtures', context=default)
+        proxy2 = LazyProxy('tests.fixtures:num', context=context)
+        self.assertTrue(id(proxy1) in default)
+        self.assertTrue(id(proxy2) in context)
+        self.assertFalse(id(proxy1) in context)
+        self.assertFalse(id(proxy2) in default)
+
+    def test_contain_proxy_2(self):
+        context = self.other
+        default = self.default
+        proxy = LazyProxy('tests.fixtures', context=default)
+        context.register(proxy, 'tests.fixtures:num')
+        self.assertTrue(id(proxy) in default)
+        self.assertTrue(id(proxy) in context)
