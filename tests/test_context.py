@@ -120,3 +120,17 @@ class TestContext(TestCase):
             'default': 'tests.fixtures',
             'other': 'tests.fixtures:num',
         })
+
+    def test_default_get_context(self):
+        context = self.default.get_child('child')
+        try:
+            self.assertEqual(context.name, 'child')
+        finally:
+            Context.delete_context(context)
+
+    def test_get_context(self):
+        context = self.other.get_child('child')
+        try:
+            self.assertEqual(context.name, 'other.child')
+        finally:
+            Context.delete_context(context)

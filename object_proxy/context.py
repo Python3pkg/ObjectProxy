@@ -45,6 +45,10 @@ def Context():
             ]
 
 
+        def delete_context(cls, context):
+            _contexts.pop(context.name)
+
+
         def __call__(cls, name_or_context):
             if isinstance(name_or_context, Context):
                 return name_or_context
@@ -84,6 +88,12 @@ def Context():
 
         def __contains__(self, proxy_id):
             return proxy_id in self.__proxies
+
+
+        def get_child(self, name):
+            if self.name != 'default':
+                name = '.'.join((self.name, name))
+            return type(self)(name)
 
 
         def reset(self):
