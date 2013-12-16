@@ -5,7 +5,7 @@ from os import path
 
 setup(
     name             = 'ObjectProxy',
-    version          = '0.1',
+    version          = '0.2',
     license          = 'BSD',
     platforms        = 'any',
     url              = 'https://github.com/Montegasppa/ObjectProxy',
