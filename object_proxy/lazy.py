@@ -2,16 +2,16 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 # @copyright ©2013, Rodrigo Cacilhας <batalema@cacilhas.info>
 
-from importlib import import_module
-from weakref import ref as weakref
-from ._lambda_relations import method_map
-from .context import Context
-
 __all__ = ['LazyProxy']
 
 
 @apply
 def LazyProxy():
+
+    from importlib import import_module
+    from weakref import ref as weakref
+    from ._lambda_relations import method_map
+    from .context import Context
 
     method_dict = dict(method_map)
 

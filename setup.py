@@ -14,7 +14,7 @@ else:
 
 setup(
     name             = 'ObjectProxy',
-    version          = '0.4-1.0rc2',
+    version          = '0.4.1-1.0rc3',
     license          = 'BSD',
     platforms        = 'any',
     url              = 'https://pypi.python.org/pypi/ObjectProxy',
