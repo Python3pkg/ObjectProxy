@@ -1,5 +1,5 @@
 # coding: UTF-8
-from __future__ import absolute_import, division, print_function, unicode_literals
+
 # @copyright ©2013, Rodrigo Cacilhας <batalema@cacilhas.info>
 
 from importlib import import_module
@@ -79,7 +79,7 @@ def LazyProxy():
             for meth in metaclass.meths:
                 dct[meth] = metaclass.build_proxy_method(meth)
 
-            for meth in method_dict.iterkeys():
+            for meth in method_dict.keys():
                 dct[meth] = metaclass.build_special_method(meth)
 
             return type(name, bases, dct)
@@ -108,9 +108,8 @@ def LazyProxy():
             )
 
 
-    class LazyProxy(ProxyBase):
+    class LazyProxy(ProxyBase, metaclass=ProxyMeta):
 
-        __metaclass__ = ProxyMeta
         __dict__ = property(lambda self: vars(super(LazyProxy, self)._target))
 
         def __repr__(self):

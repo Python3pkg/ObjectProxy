@@ -1,5 +1,5 @@
 # coding: UTF-8
-from __future__ import absolute_import, division, print_function, unicode_literals
+
 # @copyright ©2013, Rodrigo Cacilhας <batalema@cacilhas.info>
 
 __all__ = ['Context']
@@ -15,7 +15,7 @@ def Context():
 
         @property
         def contexts(cls):
-            return set(_contexts.iteritems())
+            return set(_contexts.items())
 
 
         @property
@@ -44,7 +44,7 @@ def Context():
             proxy_id = id(proxy)
             return [
                 (name, context[proxy_id])
-                for name, context in _contexts.iteritems()
+                for name, context in _contexts.items()
                 if proxy_id in context
             ]
 
@@ -65,10 +65,7 @@ def Context():
             return self
 
 
-    class Context(object):
-
-        __metaclass__ = ContextMeta
-
+    class Context(object, metaclass=ContextMeta):
 
         def __init__(self, name):
             self.name = name

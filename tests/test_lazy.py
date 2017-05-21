@@ -1,5 +1,5 @@
 # coding: UTF-8
-from __future__ import absolute_import, division, print_function, unicode_literals
+
 # @copyright ©2013, Rodrigo Cacilhας <batalema@cacilhas.info>
 
 from os import path
@@ -182,9 +182,9 @@ class TestProxy(TestCase):
         self.assertEqual(len(self.mylist), 4)
 
     def test_long(self):
-        value = long(self.num)
-        self.assertEqual(value, 23L)
-        self.assertTrue(isinstance(value, long))
+        value = int(self.num)
+        self.assertEqual(value, 23)
+        self.assertTrue(isinstance(value, int))
 
     def test_lshift(self):
         self.assertEqual(self.num << 2, 92)
@@ -322,9 +322,9 @@ class TestProxy(TestCase):
         self.assertEqual(self.num / 3, 23. / 3.)
 
     def test_unicode(self):
-        value = unicode(self.num)
+        value = str(self.num)
         self.assertEqual(value, '23')
-        self.assertTrue(isinstance(value, unicode))
+        self.assertTrue(isinstance(value, str))
 
     def test_xor(self):
         self.assertEqual(self.num ^ 15, 24)

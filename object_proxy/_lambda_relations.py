@@ -1,5 +1,5 @@
 # coding: UTF-8
-from __future__ import absolute_import, division, print_function, unicode_literals
+
 # @copyright ©2013, Rodrigo Cacilhας <batalema@cacilhas.info>
 
 from contextlib import wraps
@@ -49,7 +49,7 @@ def method_map():
         ('__iter__', iter),
         ('__le__', lambda target, o: target <= o),
         ('__len__', len),
-        ('__long__', long),
+        ('__long__', int),
         ('__lshift__', lambda target, o: target << o),
         ('__lt__', lambda target, o: target < o),
         ('__mod__', lambda target, o: target % o),
@@ -79,6 +79,6 @@ def method_map():
         ('__str__', bytes),
         ('__sub__', lambda target, o: target - o),
         ('__truediv__', lambda target, o: target / o),
-        ('__unicode__', unicode),
+        ('__unicode__', str),
         ('__xor__', lambda target, o: target ^ o),
     )
